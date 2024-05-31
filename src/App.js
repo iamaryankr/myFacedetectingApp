@@ -63,7 +63,20 @@ const initialState = {
 class App extends Component {
   constructor() {
     super();
-    this.state = initialState;
+    this.state = {
+      input: '',
+      imageUrl: '',
+      box: {},
+      route: 'signin',
+      isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      }
+    };
   }
 
   loadUser = (data) => {
@@ -97,30 +110,42 @@ class App extends Component {
     this.setState({input: event.target.value});
   }
 
+
   onButtonSubmit = () => {
     this.setState({imageUrl: this.state.input});
-
-    fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", returnClarifairequest(this.state.input))
+     fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", returnClarifairequest(this.state.input))
     .then(response => response.json())
     .then(response => {
-      console.log('hi', response)
-      if(response){
-        fetch('http://localhost:3000/image' , {
-          method: 'put',
-          headers: {'Content-Type' : 'application/json'},
-          body: JSON.stringify({
-            id: this.state.user.id
-          })
-        })
-          .then(response => response.json())
-          .then(count => {
-            this.setState(Object.assign(this.state.user, {entries: count}))
-          })
-      }
-      this.displayFaceBox(this.calculateFaceLocation(response))
-    })
-    .catch(err => console.log(err));
-  };
+    console.log('hi', response)
+    this.displayFaceBox(this.calculateFaceLocation(response))
+  }) 
+  .catch(error => console.log('error', error));
+};
+  // onButtonSubmit = () => {
+  //   if(this.state.input.trim()==='') return;
+  //   this.setState({imageUrl: this.state.input});
+
+  //   fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", returnClarifairequest(this.state.input))
+  //   .then(response => response.json())
+  //   .then(response => {
+  //     console.log('hi', response)
+  //     if(response){
+  //       fetch(this.state.input , {
+  //         method: 'put',
+  //         headers: {'Content-Type' : 'application/json'},
+  //         body: JSON.stringify({
+  //           id: this.state.user.id
+  //         })
+  //       })
+  //         .then(response => response.json())
+  //         .then(count => {
+  //           this.setState(Object.assign(this.state.user, {entries: count}))
+  //         })
+  //     }
+  //     this.displayFaceBox(this.calculateFaceLocation(response))
+  //   })
+  //   .catch(err => console.log(err));
+  // };
 
   onRouteChange = (route) => {
     if (route === 'signout') {
@@ -129,7 +154,7 @@ class App extends Component {
       this.setState({isSignedIn: true})
     }
     this.setState({route: route});
-  }
+  };
 
   render() {
     const { isSignedIn, imageUrl, route, box } = this.state;
