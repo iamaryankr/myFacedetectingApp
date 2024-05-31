@@ -1,7 +1,16 @@
 .App {
   text-align: center;
 }
-
+.particles{
+  position: "absolute";
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+.center {
+  display: flex;
+  justify-content: center;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -9,7 +18,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+    animation: cobweb infinite 20s linear;
   }
 }
 
